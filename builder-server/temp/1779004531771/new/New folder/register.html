@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রেজিস্ট্রেশন - Pro File Manager</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <div class="register-header">
+                <span class="logo-icon">📁</span>
+                <h1>নতুন অ্যাকাউন্ট তৈরি করুন</h1>
+                <p>Pro File Manager এ যোগ দিন</p>
+            </div>
+
+            <form class="register-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="name">সম্পূর্ণ নাম</label>
+                    <input type="text" id="name" placeholder="আপনার নাম" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">ইমেইল</label>
+                    <input type="email" id="email" placeholder="আপনার ইমেইল" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">পাসওয়ার্ড</label>
+                    <input type="password" id="password" placeholder="শক্তিশালী পাসওয়ার্ড" required>
+                    <small class="password-hint">কমপক্ষে ৬ অক্ষর</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
+                    <input type="password" id="confirmPassword" placeholder="পাসওয়ার্ড আবার লিখুন" required>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">আমি <a href="#">শর্তাবলী</a> সম্মত</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">অ্যাকাউন্ট তৈরি করুন</button>
+            </form>
+
+            <div class="register-footer">
+                <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a></p>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html>

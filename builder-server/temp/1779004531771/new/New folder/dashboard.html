@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ড্যাশবোর্ড - Pro File Manager</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">📁</span>
+                <span class="logo-text">Pro File Manager</span>
+            </div>
+            <div class="user-section">
+                <span class="user-name" id="userName">ব্যবহারকারী</span>
+                <button class="btn btn-logout" onclick="logout()">লগআউট</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item" onclick="goHome()">🏠 হোম</span>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ফাইল খুঁজুন..." onkeyup="filterFiles()">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="toolbar-buttons">
+                <button class="btn btn-secondary" onclick="showCreateFolderModal()">
+                    📁 নতুন ফোল্ডার
+                </button>
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    ⬆️ ফাইল আপলোড
+                </button>
+                <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+                <div class="drop-icon">☁️</div>
+                <p><strong>ফাইল এখানে ড্র্যাগ করুন</strong></p>
+                <p class="drop-hint">অথবা আপলোড বাটনে ক্লিক করুন</p>
+            </div>
+        </div>
+
+        <!-- File Grid -->
+        <div class="file-grid" id="fileGrid"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📭</div>
+            <h3>কোনো ফাইল নেই</h3>
+            <p>এই ফোল্ডারে এখনো কোনো ফাইল বা ফোল্ডার নেই</p>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-progress" id="uploadProgress" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">আপলোড হচ্ছে...</p>
+        </div>
+    </div>
+
+    <!-- Create Folder Modal -->
+    <div id="folderModal" class="modal">
+        <div class="modal-overlay" onclick="closeFolderModal()"></div>
+        <div class="modal-content">
+            <h2>নতুন ফোল্ডার তৈরি করুন</h2>
+            <div class="form-group">
+                <label>ফোল্ডার নাম</label>
+                <input type="text" id="folderName" placeholder="ফোল্ডারের নাম লিখুন" autofocus>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeFolderModal()">বাতিল</button>
+                <button class="btn btn-primary" onclick="createFolder()">তৈরি করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-overlay" onclick="closePreview()"></div>
+        <div class="modal-content preview-content">
+            <button class="close-btn" onclick="closePreview()">✕</button>
+            <img id="previewImage" src="" alt="Preview">
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+        <div class="modal-content">
+            <h2>ফাইল ডিলিট করুন?</h2>
+            <p id="deleteMessage">এটি ডিলিট করতে চান?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">বাতিল</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">ডিলিট করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

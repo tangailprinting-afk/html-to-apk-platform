@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2 Secure Upload & Download Test</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 50px; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+        input[type="file"] { margin: 20px 0; border: 1px dashed #bbb; padding: 20px; width: 80%; cursor: pointer; }
+        .btn { background: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; transition: 0.3s; }
+        .btn:disabled { background: #ccc; }
+        #status { margin-top: 20px; font-weight: bold; font-size: 14px; }
+        #downloadLinkArea { margin-top: 20px; display: none; padding: 15px; background: #e9f7ef; border-radius: 5px; border: 1px solid #2ecc71; }
+        a { color: #27ae60; text-decoration: none; word-break: break-all; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Secure Storage Test</h2>
+    <p style="font-size: 13px; color: #666;">ছবি সিলেক্ট করে আপলোড দিন</p>
+    
+    <input type="file" id="fileInput" accept="image/*">
+    <button id="uploadBtn" class="btn" onclick="startUpload()">আপলোড শুরু করুন</button>
+    
+    <div id="status"></div>
+
+    <div id="downloadLinkArea">
+        <p style="color: #27ae60; margin: 0 0 10px 0;">✅ সফলভাবে আপলোড হয়েছে!</p>
+        <p style="font-size: 12px; font-weight: bold;">৫ মিনিটের সিকিউর লিঙ্ক:</p>
+        <a id="finalLink" href="#" target="_blank">লিঙ্ক এখানে আসবে</a>
+        <p style="font-size: 11px; color: #888; margin-top: 10px;">(৫ মিনিট পর এই লিঙ্ক আর কাজ করবে না)</p>
+    </div>
+</div>
+
+<script>
+    // --- কনফিগারেশন ---
+    const WORKER_URL = "https://cdn.downloadserverbd.com"; 
+    const SECRET_KEY = "MySafePassword123"; // আপনার ওয়ার্কারের সাথে মিল থাকতে হবে
+
+    async function startUpload() {
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const status = document.getElementById('status');
+        const downloadArea = document.getElementById('downloadLinkArea');
+        const finalLink = document.getElementById('finalLink');
+
+        if (fileInput.files.length === 0) {
+            alert("দয়া করে একটি ফাইল সিলেক্ট করুন!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const fileName = `${Date.now()}_${file.name}`; // ফাইল নেম ইউনিক করা
+        const uploadPath = `/original/${fileName}`;
+
+        // UI আপডেট
+        status.innerText = "আপলোড হচ্ছে... দয়া করে অপেক্ষা করুন।";
+        status.style.color = "#007bff";
+        uploadBtn.disabled = true;
+        downloadArea.style.display = "none";
+
+        try {
+            // সরাসরি ক্লাউডফেয়ার ওয়ার্কারে PUT রিকোয়েস্ট পাঠানো
+            const response = await fetch(`${WORKER_URL}${uploadPath}`, {
+                method: 'PUT',
+                body: file
+            });
+
+            if (response.ok) {
+                // সফল হলে ৫ মিনিটের লিঙ্ক তৈরি করা
+                const expires = Math.floor(Date.now() / 1000) + (5 * 60);
+                const token = btoa(SECRET_KEY + uploadPath + expires).substring(0, 16);
+                const secureUrl = `${WORKER_URL}${uploadPath}?token=${token}&expires=${expires}`;
+
+                status.innerText = "";
+                downloadArea.style.display = "block";
+                finalLink.href = secureUrl;
+                finalLink.innerText = secureUrl;
+            } else {
+                throw new Error("আপলোড ব্যর্থ হয়েছে! ওয়ার্কার কোড চেক করুন।");
+            }
+        } catch (err) {
+            status.innerText = "এরর: " + err.message;
+            status.style.color = "red";
+        } finally {
+            uploadBtn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
