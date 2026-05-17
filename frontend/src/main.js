@@ -69,6 +69,16 @@ generateBtn.addEventListener(
             const repo =
                 import.meta.env.VITE_GITHUB_REPO;
 
+            const appName =
+                document.getElementById(
+                    "appName"
+                ).value;
+
+            const packageName =
+                document.getElementById(
+                    "packageName"
+                ).value;
+
             const response =
                 await fetch(
 `https://api.github.com/repos/${owner}/${repo}/actions/workflows/android.yml/dispatches`,
@@ -87,8 +97,16 @@ generateBtn.addEventListener(
                     },
 
                     body:JSON.stringify({
-                        ref:"main"
+
+                        ref:"main",
+
+                        inputs:{
+                            app_name:appName,
+                            package_name:packageName
+                        }
+
                     })
+
                 }
             );
 
