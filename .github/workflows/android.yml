@@ -38,12 +38,9 @@ jobs:
           <string name="app_name">${{ github.event.inputs.app_name }}</string>
           </resources>' > android-template/WebAppEngine/app/src/main/res/values/strings.xml
 
-      - name: Update Package Name
-        run: |
-          sed -i 's/namespace = ".*"/namespace = "${{ github.event.inputs.package_name }}"/' android-template/WebAppEngine/app/build.gradle.kts
+ 
 
-          sed -i 's/applicationId = ".*"/applicationId = "${{ github.event.inputs.package_name }}"/' android-template/WebAppEngine/app/build.gradle.kts
-
+ 
       - name: Grant Gradle Permission
         run: chmod +x gradlew
         working-directory: android-template/WebAppEngine
