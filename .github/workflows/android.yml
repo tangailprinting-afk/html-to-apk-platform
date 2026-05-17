@@ -1,25 +1,19 @@
 name: Build Android APK
 
 on:
-
   workflow_dispatch:
-
     inputs:
+      app_name:
+        description: "App Name"
+        required: true
+        default: "My App"
 
-inputs:
-
-  app_name:
-    description: "App Name"
-    required: true
-    type: string
-
-  package_name:
-    description: "Package Name"
-    required: true
-    type: string
+      package_name:
+        description: "Package Name"
+        required: true
+        default: "com.myapp.test"
 
 jobs:
-
   build:
 
     runs-on: ubuntu-latest
@@ -40,16 +34,12 @@ jobs:
 
       - name: Update App Name
         run: |
-
-          echo '
-<resources>
-    <string name="app_name">${{ github.event.inputs.app_name }}</string>
-</resources>
-' > android-template/WebAppEngine/app/src/main/res/values/strings.xml
+          echo '<resources>
+          <string name="app_name">${{ github.event.inputs.app_name }}</string>
+          </resources>' > android-template/WebAppEngine/app/src/main/res/values/strings.xml
 
       - name: Update Package Name
         run: |
-
           sed -i 's/namespace = ".*"/namespace = "${{ github.event.inputs.package_name }}"/' android-template/WebAppEngine/app/build.gradle.kts
 
           sed -i 's/applicationId = ".*"/applicationId = "${{ github.event.inputs.package_name }}"/' android-template/WebAppEngine/app/build.gradle.kts
