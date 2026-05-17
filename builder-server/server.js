@@ -1,3 +1,4 @@
+const { execSync } = require("child_process");
 const { exec } = require("child_process");
 const AdmZip = require("adm-zip");
 const fs = require("fs-extra");
@@ -281,6 +282,10 @@ app.post(
                 "android-template",
                 "WebAppEngine"
             );
+
+execSync("chmod +x gradlew", {
+    cwd: templatePath
+});
 
             exec(
                "./gradlew assembleDebug" ,
