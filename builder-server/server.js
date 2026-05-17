@@ -283,7 +283,7 @@ app.post(
             );
 
             exec(
-                "gradlew.bat assembleDebug",
+               "./gradlew assembleDebug" ,
                 {
                     cwd: templatePath
                 },
