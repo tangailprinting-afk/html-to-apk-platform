@@ -42,14 +42,6 @@ document.querySelector("#app").innerHTML = `
 
     <div id="status"></div>
 
-    <a
-        id="downloadBtn"
-        style="display:none"
-        target="_blank"
-    >
-        Download APK
-    </a>
-
 </div>
 `;
 
@@ -59,9 +51,6 @@ const generateBtn =
 const status =
     document.getElementById("status");
 
-const downloadBtn =
-    document.getElementById("downloadBtn");
-
 generateBtn.addEventListener(
     "click",
     async () => {
@@ -69,108 +58,49 @@ generateBtn.addEventListener(
         try {
 
             status.innerHTML =
-                "Generating APK...";
+                "Starting Cloud Build...";
 
-            downloadBtn.style.display =
-                "none";
+            const token =
+                import.meta.env.VITE_GITHUB_TOKEN;
 
-            const appName =
-                document.getElementById(
-                    "appName"
-                ).value;
+            const owner =
+                import.meta.env.VITE_GITHUB_OWNER;
 
-            const packageName =
-                document.getElementById(
-                    "packageName"
-                ).value;
-
-            const htmlCode =
-                document.getElementById(
-                    "htmlCode"
-                ).value;
-
-            const zipFile =
-                document.getElementById(
-                    "zipFile"
-                ).files[0];
-
-            const appIcon =
-                document.getElementById(
-                    "appIcon"
-                ).files[0];
-
-            const formData =
-                new FormData();
-
-            formData.append(
-                "appName",
-                appName
-            );
-
-            formData.append(
-                "packageName",
-                packageName
-            );
-
-            formData.append(
-                "htmlCode",
-                htmlCode
-            );
-
-            if(zipFile){
-
-                formData.append(
-                    "zipFile",
-                    zipFile
-                );
-
-            }
-
-            if(appIcon){
-
-                formData.append(
-                    "appIcon",
-                    appIcon
-                );
-
-            }
+            const repo =
+                import.meta.env.VITE_GITHUB_REPO;
 
             const response =
                 await fetch(
-                    "https://html-to-apk-platform.onrender.com/generate",
-                    {
-                        method:"POST",
-                        body:formData
-                    }
-                );
+`https://api.github.com/repos/${owner}/${repo}/actions/workflows/android.yml/dispatches`,
+                {
+                    method:"POST",
 
-            const data =
-                await response.json();
+                    headers:{
+                        Accept:
+"application/vnd.github+json",
 
-            console.log(data);
+                        Authorization:
+`Bearer ${token}`,
 
-            if(data.success){
+                        "Content-Type":
+"application/json"
+                    },
+
+                    body:JSON.stringify({
+                        ref:"main"
+                    })
+                }
+            );
+
+            if(response.status === 204){
 
                 status.innerHTML =
-                    "APK Build Successful";
-
-                if(data.apkUrl){
-
-                    downloadBtn.href =
-                        data.apkUrl;
-
-                    downloadBtn.style.display =
-                        "inline-block";
-
-                    downloadBtn.innerHTML =
-                        "Download APK";
-
-                }
+                    "GitHub APK Build Started 🚀";
 
             } else {
 
                 status.innerHTML =
-                    data.error || "Build Failed";
+                    "Build Failed";
 
             }
 
